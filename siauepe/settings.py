@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 """
 Django settings for siauepe project.
 
@@ -37,6 +38,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'asignatura',
+    'curso',
+    'cursoasignatura',
+    'cursoasignaturaestudiante',
+    'estudiante',
+    'horario',
+    'incidencia',
+    'inspector',
+    'periodo',
+    'profesor',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -56,7 +67,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [],
-        'APP_DIRS': True,
+        'APP_DIRS': False,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -76,8 +87,16 @@ WSGI_APPLICATION = 'siauepe.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'siauepe',
+        'USER': 'siauepe',
+        'PASSWORD': '123456',
+        'HOST': 'localhost',
+        'PORT': '3306',
+        'OPTIONS': {
+            'init_command': 'SET storage_engine=INNODB',
+            'init_command': 'SET foreign_key_checks = 0;'
+        },
     }
 }
 
@@ -100,13 +119,15 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_PROFILE_MODULE = 'inspector.inspector'
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Guayaquil'
 
 USE_I18N = True
 

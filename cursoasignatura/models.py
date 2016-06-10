@@ -1,5 +1,20 @@
+# -*- coding: UTF-8 -*-
 from __future__ import unicode_literals
 
 from django.db import models
 
+from asignatura.models import Asignatura
+from curso.models import Curso
+from periodo.models import Periodo
+from profesor.models import Profesor
+
 # Create your models here.
+
+class CursoAsignatura(models.Model):
+    asignatura=models.ForeignKey(Asignatura)
+    curso=models.ForeignKey(Curso)
+    periodo=models.ForeignKey(Periodo)
+    profesor=models.ForeignKey(Profesor)
+
+    class Meta:
+        unique_together = ('asignatura', 'curso', 'periodo', 'profesor',)
