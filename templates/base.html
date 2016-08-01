@@ -1,0 +1,157 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<!--
+	Future Imperfect by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html lang="es">
+	<head>
+		<title>{% block title %}{% endblock %}</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="shortcut icon" href="{% static 'images/favicon.png' %}">
+
+    <!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+		<!--[if lte IE 8]><script src="{% static 'assets/js/ie/html5shiv.js'%}"></script><![endif]-->
+		<link rel="stylesheet" href="{% static 'assets/css/main.css' %}" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="{% static 'assets/css/ie9.css' %}" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="{% static 'assets/css/ie8.css' %}" /><![endif]-->
+	</head>
+	<body>
+<!-- Scripts -->
+			<script src="{% static 'assets/js/jquery.min.js'%}"></script>
+			<script src="{% static 'assets/js/skel.min.js'%}"></script>
+			<script src="{% static 'assets/js/util.js'%}"></script>
+			<!--[if lte IE 8]><script src="{% static 'assets/js/ie/respond.min.js'%}"></script><![endif]-->
+			<script src="{% static 'assets/js/main.js'%}"></script>
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header">
+						<h1><a href="/">Unidad Educativa Particular Emanuel</a></h1>
+						<nav class="links">
+							<ul>
+								<li><a href="{% url 'home' %}">Inicio</a></li>
+                                {% if  request.user.is_authenticated %}
+                                    {% for group in request.user.groups.values_list %}
+                                        {% for g in group %}
+                                            {% if g == 'Inspectores' %}
+                                                <li><a href="/incidencia/">Faltas y Atrasos</a></li>
+                                                <li><a href="/incidencia/reporte/">Reportes</a></li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endfor %}
+                                    {% if request.user.is_staff %}
+                                        <li><a href="/admin/" target="_blank">Administrador</a></li>
+                                    {% endif %}
+                                    <li><a href="{% url 'contrasena' %}">Cambiar Contraseña</a></li>
+                                    <li><a href="{% url 'logout' %}">Cerrar Sesión</a></li>
+                                {% else %}
+                                    <li><a href="{% url 'login' %}">Iniciar Sesión</a></li>
+                                {% endif %}
+							</ul>
+						</nav>
+						<nav class="main">
+							<ul>
+								<li class="menu">
+									<a class="fa-bars" href="#menu">Menu</a>
+								</li>
+							</ul>
+						</nav>
+					</header>
+
+				<!-- Menu -->
+					<section id="menu">
+
+
+						<!-- Links -->
+							<section>
+								<ul class="links">
+									<li><a href="{% url 'home' %}">Inicio</a></li>
+                                        {% if  request.user.is_authenticated %}
+                                            {% for group in request.user.groups.values_list %}
+                                                {% for g in group %}
+                                                    {% if g == 'Inspectores' %}
+                                                        <li><a href="{% url 'home_incidencia' %}">Registrar Faltas y Atrasos</a></li>
+                                                        <li><a href="/incidencia/justificar/">Justificar Faltas y Atrasos</a></li>
+                                                        <li><a href="/incidencia/reporte/">Ver Reportes</a></li>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endfor %}
+
+                                            {% if request.user.is_staff %}
+                                                <li><a href="/admin/" target="_blank">Administrador</a></li>
+                                            {% endif %}
+
+                                            <li><a href="{% url 'contrasena' %}">Cambiar Contraseña</a></li>
+                                            <li><a href="{% url 'logout' %}">Cerrar Sesión</a></li>
+                                        {% else %}
+                                            <li><a href="{% url 'login' %}">Iniciar Sesión</a></li>
+                                        {% endif %}
+								</ul>
+							</section>
+
+						<!-- Actions -->
+							<section>
+								<ul class="actions vertical">
+                                    {% if  not request.user.is_authenticated %}
+                                        <li><a href="#" class="button big fit">Iniciar Sesión</a></li>
+                                    {% endif %}
+								</ul>
+							</section>
+
+					</section>
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- Post -->
+							<article class="post">																
+								<p>
+                                    {% block content %}
+
+								    {% endblock %}
+                                </p>
+							</article>																
+					</div>
+
+				<!-- Sidebar -->
+					<section id="sidebar">					
+							<section class="blurb">
+								<h2>Acerca de</h2>
+								<p>Software de gestión cuya finalidad es automatizar el registro de la inasistencia y atrasos de los estudiantes de la UEPE.
+                                <br />Proyecto de Prácticas Preprofesionales y Vinculación con la Comunidad ESPOCH Morona Santiago.
+                                </p>
+							</section>
+
+						<!-- Footer -->
+							<section id="footer">
+								<!--
+								<ul class="icons">
+									<li><a href="#" class="fa-twitter"><span class="label">Twitter</span></a></li>
+									<li><a href="#" class="fa-facebook"><span class="label">Facebook</span></a></li>
+									<li><a href="#" class="fa-instagram"><span class="label">Instagram</span></a></li>
+									<li><a href="#" class="fa-rss"><span class="label">RSS</span></a></li>
+									<li><a href="#" class="fa-envelope"><span class="label">Email</span></a></li>
+								</ul>
+								-->
+								<p class="copyright">&copy; <a href="#">Unidad Educativa Particular Emanuel</a>. <br>Frontend: <a href="http://html5up.net" target="_blank">HTML5 UP</a>. Backend: <a href="http://twitter.com/jhurtadojerves" target="_blank">Julio Hurtado</a>.</p>
+							</section>
+
+					</section>
+
+			</div>
+
+
+
+	</body>
+</html>

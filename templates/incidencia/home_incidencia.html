@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}
+Inicio
+{% endblock %}
+
+{% block content %}
+    <p>A continuación se listan las acciones que pueden ser ejectuadas:</p>
+
+    <h2>Módulo de Incidencias</h2>
+    <ol>
+        <li><a href="{% url 'incidencia_buscar_estudiante' %}">Registrar Incidencia por Estudiante</a></li>
+        <li><a href="{% url 'incidencia_buscar_curso' %}">Registrar Incidencia por Curso</a></li>
+        <li><a href="">Justificar Incidencias</a></li>
+    </ol>
+
+
+{% endblock %}

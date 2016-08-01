@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}
+Buscar Estudiante
+{% endblock %}
+
+{% block content %}
+
+    {% if request.GET.indicencia == "correcto" %}
+         <div class="alert alert-success" role="alert">¡Correcto! La incidencia se registró exitosamente. Seleccione una materia para ingresar otra incidencia o
+             <a href="{% url 'home' %}">Volver al inicio</a></div>
+    {% endif %}
+
+    <div class="list-group">
+
+        {% for curso in cursos %}
+            <a href="{{ curso.id }}" class="list-group-item">{{ curso.nombre }}° {{ curso.especialidad.nombre }} {{ curso.paralelo }}</a>
+        {% endfor %}
+    </div>
+{% endblock %}

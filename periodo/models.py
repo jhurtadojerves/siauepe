@@ -7,6 +7,9 @@ from django.db import models
 
 class Periodo(models.Model):
     nombre = models.CharField(max_length=255)
-    inicio = models.DateField(auto_now_add=True, blank=False)
-    fin = models.DateField(auto_now_add=True, blank=False)
+    inicio = models.DateField(blank=False)
+    fin = models.DateField(blank=False)
     activo = models.BooleanField(default=True)
+
+    def __unicode__(self):
+        return self.nombre

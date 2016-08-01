@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}
+Unidad Educativa Particular Emanuel | UEPE Macas Morona Santiago
+{% endblock %}
+
+{% block content %}
+
+    {% if request.GET.indicencia == "correcto" %}
+         <div class="alert alert-success" role="alert">¡Correcto! La incidencia se registró exitosamente</div>
+    {% endif %}
+
+    <div>
+    <h2 style="color: #bf0f0f;">
+        Misión
+    </h2>
+    <p>Ofrecer una educación integral, involucrando a la familia en el proceso de enseñanza – aprendizaje para impactar positivamente a nuestra sociedad mediante el amor de Jesucristo.
+
+        <h2 style="color: #bf0f0f;">EJES DE NUESTRA MISIÓN</h2>
+
+        <ul>
+        <li><h3 style="color: #bf0f0f;">Formación Cristiana</h3>
+            <ul>
+                <li>Dar a conocer el mensaje de la salvación de Jesucristo</li>
+                <li>Impartir principios y enseñanzas bíblicas para que estas guíen el actuar de los alumnos</li>
+            </ul>
+        </li>
+        <li><h3 style="color: #bf0f0f;">Formación Integral</h3>
+            <ul>
+                <li>Respetar al estudiante como un ser humano de una manera integral considerando sus áreas: emocional,
+                    social, corporal e intelectual, mediante el proceso de enseñanza- aprendizaje para fortalecer cada
+                    una de ellas y lograr autonomía, cooperación y criticidad.
+                </li>
+                <li>Propiciar una educación en la que se respete las diferencias individuales, sin discriminación
+                    económica, racial, religiosa, de los alumnos, elevando su autoestima.
+                </li>
+                <li>Ofrecer una enseñanza interdisciplinaria, mediante métodos y técnicas activas tomando en cuenta las inteligencias múltiples.</li>
+            </ul>
+        </li>
+        <li><h3 style="color: #bf0f0f;">Relación con el Entorno</h3>
+            <ul>
+                <li>Vincular al alumno dentro de la realidad social en la que se desenvuelve, mediante diversas actividades.</li>
+                <li>Fortalecer la relación del estudiante con su familia, y ésta con la Institución.</li>
+            </ul>
+        </li>
+        </ul>
+    
+    
+    </p>
+
+
+
+    </div>
+{% endblock %}

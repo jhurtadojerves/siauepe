@@ -8,6 +8,9 @@ from django.db import models
 class Especialidad(models.Model):
     nombre = models.CharField(max_length=255)
 
+    def __unicode__(self):
+        return self.nombre
+
 class Curso(models.Model):
     nombre_opciones = (('1', 'Primero'),('2', 'Segundo'), ('3', 'Tercero'), ('4', 'Cuarto'),('5', 'Quinto'),('6', 'Sexto'),('7', 'Séptimo'),('8', 'Octavo'),('9', 'Noveno'))
     nombre = models.CharField(max_length=1, choices=nombre_opciones,default=1)
@@ -17,3 +20,5 @@ class Curso(models.Model):
     class Meta:
         unique_together = ('nombre', 'paralelo', 'especialidad', )
 
+    def __unicode__(self):
+        return self.nombre

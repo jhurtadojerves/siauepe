@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}
+Inicio
+{% endblock %}
+
+{% block content %}
+    No tienes permisos para acceder a los siguientes recursos: <br>
+    <li>
+        {{ error }}
+    </li>
+    <br>
+    <a href="{% url 'login' %}">Inicia sesión</a> con un usuario válido para continuar
+{% endblock %}

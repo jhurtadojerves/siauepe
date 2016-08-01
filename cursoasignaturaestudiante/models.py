@@ -11,3 +11,6 @@ from estudiante.models import Estudiante
 class CursoAsignaturaEstudiante(models.Model):
     asignatura=models.ForeignKey(CursoAsignatura)
     estudiante=models.ForeignKey(Estudiante)
+
+    def __unicode__(self):
+        return self.asignatura.asignatura.nombre + " " + self.asignatura.curso.nombre
