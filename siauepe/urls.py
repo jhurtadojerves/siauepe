@@ -39,7 +39,12 @@ urlpatterns = [
         name='incidencia_buscar_curso'),
 	url(r'^incidencia/registrar/curso/([^/]+)/$', 'incidencia.views.incidencia_curso_materias',
         name='incidencia_curso_materias'),
+	url(r'^incidencia/registrar/curso/([^/]+)/([^/]+)/$', 'incidencia.views.incidencia_curso_estudiantes',
+        name='incidencia_curso_estudiantes'),
 
+	url(r'^incidencia/justificar/$', 'incidencia.views.incidencia_justificar', name='incidencia_justificar'),
+	url(r'^incidencia/justificar/estudiante/([^/]+)/$', 'incidencia.views.incidencia_justificar_estudiante', name='incidencia_justificar_estudiante'),
+	url(r'^incidencia/justificar/estudiante/([^/]+)/([^/]+)/$', 'incidencia.views.incidencia_justificar_estudiante_incidencia', name='incidencia_justificar_estudiante_incidencia'),
 
 
     url(r'^estudiante/buscar/$', 'incidencia.views.busqueda', name='busqueda'),

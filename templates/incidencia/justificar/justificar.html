@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}
+Registrar Incidencia
+{% endblock %}
+
+{% block content %}
+
+    {% if request.GET.mensaje == "correcto" %}
+         <div class="alert alert-success" role="alert">¡Correcto! La incidencia se registró exitosamente. Seleccione una materia para ingresar otra incidencia o
+             <a href="{% url 'home' %}">Volver al inicio</a></div>
+    {% endif %}
+    <div class="alert alert-info" role="alert">
+        Justificar - {{ estudiante.nombre }} {{ estudiante.apellido }} - {{ asignatura.nombre }} - {{ incidencia.fecha }}
+    </div>
+    <form action='' method="POST" style="font-size: 1em;">
+        {% csrf_token %}
+            {{ form.as_p }}
+        <button class="enviar" type="submit"><bold>Justificar</bold></button>
+    </form>
+
+
+{% endblock %}

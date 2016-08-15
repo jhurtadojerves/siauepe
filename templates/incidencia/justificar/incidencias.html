@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}
+Faltas y Atrasos - {{ estudiante.nombre }} {{ estudiante.apellido }}
+{% endblock %}
+
+{% block content %}
+
+    {% if request.GET.indicencia == "correcto" %}
+         <div class="alert alert-success" role="alert">¡Correcto! La incidencia se registró exitosamente. Seleccione una materia para ingresar otra incidencia o
+             <a href="{% url 'home' %}">Volver al inicio</a></div>
+    {% endif %}
+    {% if request.GET.mensaje == "correcto" %}
+         <div class="alert alert-success" role="alert">La Incidencia se justificó correctamente</div>
+    {% endif %}
+
+    <div class="panel panel-default">
+          <!-- Default panel contents -->
+          <div class="panel-heading">Lista de Atrasos y Faltas - {{ estudiante.nombre }} {{ estudiante.apellido }}</div>
+
+          <!-- Table -->
+    <div class="table-bordered">
+        <table class="table">
+              <tr>
+                  <td>ID</td>
+                  <td>Fecha</td>
+                  <td>Tipo</td>
+                  <td>Inspector</td>
+                  <td>Asignatura</td>
+                  <td>Justificar</td>
+              </tr>
+
+              {% for incidencia in incidencias %}
+                <tr>
+                    <td>{{ incidencia.id }}</td>
+                    <td>{{ incidencia.fecha }}</td>
+                    <td>{{ incidencia.get_tipo_display }}</td>
+                    <td>{{ incidencia.revisado_por.user.get_full_name }}</td>
+                    <td>{{ incidencia.asignaturaestudiante.asignatura.asignatura.nombre }}</td>
+                    <td><a href="{% url 'incidencia_justificar_estudiante_incidencia' estudiante.id incidencia.id %}">Justificar</a></td>
+
+                </tr>
+              {% endfor %}
+
+
+        </table>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
 {% block title %}
-Buscar Estudiante
+Seleccionar Asignatura
 {% endblock %}
 
 {% block content %}
 
-    {% if request.GET.indicencia == "correcto" %}
+    {% if request.GET.incidencia == "correcto" %}
          <div class="alert alert-success" role="alert">¡Correcto! La incidencia se registró exitosamente. Seleccione una materia para ingresar otra incidencia o
              <a href="{% url 'home' %}">Volver al inicio</a></div>
     {% endif %}

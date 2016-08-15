@@ -9,7 +9,7 @@ Buscar Estudiante
             Buscar Estudiantes por nombre, apellido o cédula
         </div>
         <form id="search" method="get" action="#">
-            <input type="text" name="query" placeholder="Buscar Estudiante" id="busqueda"/>
+            <input type="text" name="query" placeholder="Buscar Estudiante. Nombre, Apellido, Cédula" id="busqueda"/>
         </form>
 
         <p>
@@ -31,7 +31,7 @@ Buscar Estudiante
          success : function(data) {
 
                 for (i=0;i<data.length;i++){
-                    $("#resultEstudiante").append("<li><a href=/incidencia/registrar/estudiante/"+data[i].id+">"+data[i].nombre + " " + data[i].apellido+"</a></li>");
+                    $("#resultEstudiante").append("<li><a href=estudiante/"+data[i].id+">"+data[i].nombre + " " + data[i].apellido+"</a></li>");
                 }
          },
          error : function(message) {
