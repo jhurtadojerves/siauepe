@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'inspector',
     'periodo',
     'profesor',
+    'representante',
 ]
 
 MIDDLEWARE_CLASSES = [

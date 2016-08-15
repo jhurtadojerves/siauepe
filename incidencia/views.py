@@ -169,10 +169,10 @@ def incidencia_justificar(request):
 @login_required()
 def incidencia_justificar_estudiante(request, id_estudiante):
 	now = datetime.datetime.now()
-	if(now.weekday()==0 or now.weekday()==6):
-		dias = datetime.timedelta(days=3)
-	elif (now.weekday()==1):
+	if (now.weekday() == 0 or now.weekday()==1):
 		dias = datetime.timedelta(days=4)
+	elif (now.weekday() == 6):
+		dias = datetime.timedelta(days=3)
 	else:
 		dias = datetime.timedelta(days=2)
 
@@ -186,10 +186,10 @@ def incidencia_justificar_estudiante(request, id_estudiante):
 @login_required()
 def incidencia_justificar_estudiante_incidencia(request, id_estudiante, id_incidencia):
 	now = datetime.datetime.now()
-	if (now.weekday() == 0 or now.weekday() == 6):
-		dias = datetime.timedelta(days=3)
-	elif (now.weekday() == 1):
+	if (now.weekday() == 0 or now.weekday() == 1):
 		dias = datetime.timedelta(days=4)
+	elif (now.weekday() == 6):
+		dias = datetime.timedelta(days=3)
 	else:
 		dias = datetime.timedelta(days=2)
 

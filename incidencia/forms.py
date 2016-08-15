@@ -42,12 +42,12 @@ class EstudiantesForm(forms.Form):
 class JustificarForm(ModelForm):
 	class Meta:
 		model = Incidencia
-		fields = ['cedula_representante', 'justificacion']
+		fields = ['justificacion']
 		widgets = {
 			'justificacion': forms.Textarea(attrs={'cols': 80, 'rows': 5}),
 		}
 
-	def clean_cedula_representante(self):
+	'''def clean_cedula_representante(self):
 		"""
 		Valída que sea Correcta la Cédula
 		"""
@@ -63,3 +63,4 @@ class JustificarForm(ModelForm):
 				raise forms.ValidationError('Ingrese una cédula válida')
 		else:
 			raise forms.ValidationError('Ingrese una cédula con el formato 1234567890')
+	'''
