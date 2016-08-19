@@ -1,11 +1,20 @@
 from django.contrib import admin
 from models import Representante
 
+from import_export import resources, fields
+from import_export.admin import ImportMixin
 
 # Register your models here.
 
-@admin.register(Representante)
-class RepresentanteAdmin(admin.ModelAdmin):
-	list_display = ('nombres', 'apellidos', )
-	#list_editable = ('estado', 'tipo')
+class RepresentanteResource(resources.ModelResource):
+	class Meta:
+		model = Representante
+		fields = ('id', 'apellidos', 'nombres')
+		import_order = fields
 
+#@admin.register(Representante)
+class RepresentanteAdmin(ImportMixin, admin.ModelAdmin):
+	list_display = ['nombres', 'apellidos', ]
+	resource_class = RepresentanteResource
+
+admin.site.register(Representante, RepresentanteAdmin)

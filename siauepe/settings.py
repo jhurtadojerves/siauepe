@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'periodo',
     'profesor',
     'representante',
+    'import_export',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -121,6 +122,10 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 AUTH_PROFILE_MODULE = 'inspector.inspector'
+
+
+
+
 
 
 # Internationalization

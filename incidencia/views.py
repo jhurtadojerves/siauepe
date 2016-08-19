@@ -20,6 +20,25 @@ from horario.models import Horario
 from curso.models import Curso
 from asignatura.models import Asignatura
 
+#####################################
+#####################################
+'''
+////////////////////////////////////
+///Librería para generar reportes///
+////////////////////////////////////
+'''
+#####################################
+#####################################
+
+from reportlab.platypus import Paragraph
+from reportlab.platypus import Image
+from reportlab.platypus import SimpleDocTemplate
+from reportlab.platypus import Spacer
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.pagesizes import A4, landscape
+from reportlab.lib import colors
+from reportlab.platypus import Table
+
 
 from forms import incidenciaForm, EstudiantesForm, JustificarForm
 from django import forms
@@ -185,6 +204,8 @@ def incidencia_justificar_estudiante(request, id_estudiante):
 
 @login_required()
 def incidencia_justificar_estudiante_incidencia(request, id_estudiante, id_incidencia):
+
+
 	now = datetime.datetime.now()
 	if (now.weekday() == 0 or now.weekday() == 1):
 		dias = datetime.timedelta(days=4)
@@ -196,14 +217,63 @@ def incidencia_justificar_estudiante_incidencia(request, id_estudiante, id_incid
 	incidencia = get_object_or_404(Incidencia, fecha__range=(now-dias, now), id=id_incidencia, estado=False)
 	estudiante = incidencia.asignaturaestudiante.estudiante
 	asignatura = incidencia.asignaturaestudiante.asignatura.asignatura
+	horario = Horario.objects.get(cursoasignatura=incidencia.asignaturaestudiante.asignatura, dia=incidencia.fecha.weekday())
 
 	if request.method=='POST':
 		form = JustificarForm(request.POST, instance=incidencia)
 		if form.is_valid():
 			incidencia = form.save(commit=False)
 			incidencia.estado = True
-			incidencia.save()
-			return HttpResponseRedirect(reverse('incidencia_justificar_estudiante', args=(estudiante.id,))+"?mensaje=correcto")
+			#incidencia.save()
+
+			estiloHoja = getSampleStyleSheet()
+			cabecera = estiloHoja['Heading4']
+			cabecera.pageBreakBefore = 0
+			cabecera.keepWithNext = 0
+			estilo = estiloHoja['BodyText']
+			salto = Spacer(0, 10)
+
+			pagina = []
+
+			imagen = Image("logo.png")
+			pagina.append(imagen)
+			pagina.append(salto)
+
+			pagina.append(Paragraph("Justificacion", estilo))
+			pagina.append(salto)
+			pagina.append(salto)
+
+			pagina.append(Paragraph("Estudiante: " + estudiante.nombre + " " + estudiante.apellido, estilo))
+			pagina.append(salto)
+
+			pagina.append(Paragraph("Fecha: " + incidencia.fecha.strftime('%m/%d/%Y'), estilo))
+			pagina.append(salto)
+
+			pagina.append(Paragraph("Hora: " + horario.get_hora_display(), estilo))
+			pagina.append(salto)
+
+			pagina.append(Paragraph("Asignatura: " + asignatura.nombre, estilo))
+			pagina.append(salto)
+			pagina.append(Paragraph("Firmas:", estilo))
+			pagina.append(salto)
+			pagina.append(salto)
+
+			pagina.append(Paragraph("Nombre del representante", estilo))
+
+			pagina.append(Paragraph(incidencia.revisado_por.user.get_full_name(), estilo))
+
+			nombreArchivo= "justificante-"+incidencia.fecha.strftime('%m-%d-%Y')+"-"+estudiante.nombre+"-"+estudiante.apellido+".pdf"
+			documento = SimpleDocTemplate(nombreArchivo,pagezise=landscape(A4),  showBoundary=1, displayDocTitle=1, title="Justificante")
+
+			documento.build(pagina)
+
+
+			salida = open(nombreArchivo)
+			response = HttpResponse(salida, content_type='application/pdf')
+			response['Content-Disposition'] = 'inline; filename='+nombreArchivo
+			return response
+
+			#return HttpResponseRedirect(reverse('incidencia_justificar_estudiante', args=(estudiante.id,))+"?mensaje=correcto")
 	else:
 		form = JustificarForm(instance=incidencia)
 
