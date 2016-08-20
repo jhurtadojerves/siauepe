@@ -6,6 +6,7 @@ from django.db import models
 # Create your models here.
 
 class Periodo(models.Model):
+    id = models.IntegerField(primary_key=True)
     nombre = models.CharField(max_length=255)
     inicio = models.DateField(blank=False)
     fin = models.DateField(blank=False)

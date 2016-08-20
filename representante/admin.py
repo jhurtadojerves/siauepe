@@ -11,6 +11,7 @@ class RepresentanteResource(resources.ModelResource):
 		model = Representante
 		fields = ('id', 'apellidos', 'nombres')
 		import_order = fields
+		IMPORT_EXPORT_SKIP_ADMIN_LOG = True
 
 #@admin.register(Representante)
 class RepresentanteAdmin(ImportMixin, admin.ModelAdmin):
