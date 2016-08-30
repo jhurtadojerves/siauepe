@@ -11,14 +11,11 @@ from profesor.models import Profesor
 # Create your models here.
 
 class CursoAsignatura(models.Model):
-    asignatura=models.ForeignKey(Asignatura)
-    curso=models.ForeignKey(Curso)
-    periodo=models.ForeignKey(Periodo)
-    profesor=models.ForeignKey(Profesor)
+    asignatura = models.ForeignKey(Asignatura)
+    curso = models.ForeignKey(Curso)
+    periodo = models.ForeignKey(Periodo)
+    profesor = models.ForeignKey(Profesor)
     numero_horas = models.IntegerField()
 
     class Meta:
-        unique_together = ('asignatura', 'curso', 'periodo', 'profesor',)
-
-    def __unicode__(self):
-        return self.curso.nombre + " " +self.asignatura.nombre
+		unique_together = ('asignatura', 'curso', 'periodo',)

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}
+Registrar Incidencia
+{% endblock %}
+
+{% block content %}
+
+    {% if horario %}
+        <div class="alert alert-danger .alert-dismissible" role="alert">No existe un horario registrado para la asignatura {{ asignatura.nombre }} en la fecha seleccionada</div>
+    {% endif %}
+    {% if duplicado %}
+        <div class="alert alert-danger .alert-dismissible" role="alert">Ya existe una incidencia registrada para la asignatura {{ asignatura.nombre }} en la fecha seleccionada</div>
+    {% endif %}
+    <div class="alert alert-info" role="alert">
+        Registro de Incidencias - {{ curso.asignatura.nombre }} - {{ curso.curso.nombre }} {{ curso.curso.paralelo }} {{ curso.curso.especialidad.nombre }}
+    </div>
+    <form action='' method="POST" style="font-size: 1em;">
+        {% csrf_token %}
+            {{ form.as_p }}
+        <button class="enviar" type="submit"><bold>Registrar</bold></button>
+    </form>
+
+
+{% endblock %}

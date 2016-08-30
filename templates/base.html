@@ -47,6 +47,7 @@
                                             {% if g == 'Inspectores' %}
                                                 <li><a href="/incidencia/">Faltas y Atrasos</a></li>
                                                 <li><a href="/incidencia/reporte/">Reportes</a></li>
+                                                <li><a href="{% url 'matricular' %}">Matricular</a></li>
                                             {% endif %}
                                         {% endfor %}
                                     {% endfor %}
@@ -84,6 +85,7 @@
                                                         <li><a href="{% url 'home_incidencia' %}">Registrar Faltas y Atrasos</a></li>
                                                         <li><a href="/incidencia/justificar/">Justificar Faltas y Atrasos</a></li>
                                                         <li><a href="/incidencia/reporte/">Ver Reportes</a></li>
+                                                        <li><a href="{% url 'matricular' %}">Matricular</a></li>
                                                     {% endif %}
                                                 {% endfor %}
                                             {% endfor %}

@@ -20,4 +20,5 @@ class PeriodoResource(resources.ModelResource):
 @admin.register(Periodo)
 class PeriodoAdmin(ImportMixin, admin.ModelAdmin):
 	list_display = ['nombre', 'inicio', 'fin', 'activo']
+	list_editable = ['activo',]
 	resource_class = PeriodoResource

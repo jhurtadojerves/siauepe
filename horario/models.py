@@ -22,3 +22,6 @@ class Horario(models.Model):
     )
     hora = models.CharField(max_length=1, choices=hora_opciones, default='1')
     cursoasignatura = models.ForeignKey(CursoAsignatura)
+
+    def curso_asignado(self):
+		return self.cursoasignatura.asignatura.nombre + " " +self.cursoasignatura.curso.nombre + " " + self.cursoasignatura.curso.paralelo + " " + self.cursoasignatura.curso.especialidad.nombre

@@ -10,7 +10,7 @@ from django.contrib.auth.models import User, Group
 
 from models import Incidencia
 
-from estudiante.models import Estudiante
+from estudiante.models import Estudiante, Matricula
 from cursoasignaturaestudiante.models import CursoAsignaturaEstudiante
 from periodo.models import Periodo
 from cursoasignatura.models import CursoAsignatura
@@ -35,9 +35,10 @@ from reportlab.platypus import Image
 from reportlab.platypus import SimpleDocTemplate
 from reportlab.platypus import Spacer
 from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.lib.pagesizes import A4, landscape
+from reportlab.lib.pagesizes import A4, A5, landscape, A6
 from reportlab.lib import colors
 from reportlab.platypus import Table
+from reportlab.lib.fonts import tt2ps
 
 
 from forms import incidenciaForm, EstudiantesForm, JustificarForm
@@ -136,7 +137,8 @@ def incidencia_curso_materias(request, id):
 def incidencia_curso_estudiantes(request, id_curso, id_asignatura):
 	periodo = get_object_or_404(Periodo, activo = True)
 	asignatura = get_object_or_404(Asignatura, id = id_asignatura)
-	cursoasignatura = get_object_or_404(CursoAsignatura, asignatura = asignatura, periodo = periodo)
+	curso = get_object_or_404(Curso, id = id_curso)
+	cursoasignatura = get_object_or_404(CursoAsignatura, asignatura = asignatura, periodo = periodo, curso = curso)
 	cursoestudiantes = CursoAsignaturaEstudiante.objects.filter(asignatura=cursoasignatura).values('estudiante_id')
 	estudiantes = Estudiante.objects.filter(id__in = cursoestudiantes)
 	inspector = Inspector.objects.get(user=request.user)
@@ -176,7 +178,7 @@ def incidencia_curso_estudiantes(request, id_curso, id_asignatura):
 		return HttpResponseRedirect(reverse('incidencia_curso_materias', args=(id_curso))+"?incidencia=correcto")
 	else:
 		form = EstudiantesForm(query=estudiantes)
-	return render(request, 'incidencia/registrar.html', {'form': form,},
+	return render(request, 'incidencia/registrar_por_curso.html', {'form': form, 'curso':cursoasignatura},
 				  context_instance=RequestContext(request))
 
 
@@ -224,46 +226,55 @@ def incidencia_justificar_estudiante_incidencia(request, id_estudiante, id_incid
 		if form.is_valid():
 			incidencia = form.save(commit=False)
 			incidencia.estado = True
-			#incidencia.save()
+			incidencia.save()
 
 			estiloHoja = getSampleStyleSheet()
-			cabecera = estiloHoja['Heading4']
+			cabecera = estiloHoja['Title']
 			cabecera.pageBreakBefore = 0
 			cabecera.keepWithNext = 0
+			cabecera.textColor = colors.red
 			estilo = estiloHoja['BodyText']
+
 			salto = Spacer(0, 10)
 
 			pagina = []
 
-			imagen = Image("logo.png")
-			pagina.append(imagen)
 			pagina.append(salto)
+			pagina.append(Paragraph("Unidad Educativa Particular Emanuel", cabecera))
 
-			pagina.append(Paragraph("Justificacion", estilo))
+			cabecera.textColor = colors.black
+			pagina.append(Paragraph(""+"Justificación", cabecera))
 			pagina.append(salto)
 			pagina.append(salto)
 
 			pagina.append(Paragraph("Estudiante: " + estudiante.nombre + " " + estudiante.apellido, estilo))
-			pagina.append(salto)
-
 			pagina.append(Paragraph("Fecha: " + incidencia.fecha.strftime('%m/%d/%Y'), estilo))
-			pagina.append(salto)
-
 			pagina.append(Paragraph("Hora: " + horario.get_hora_display(), estilo))
-			pagina.append(salto)
-
 			pagina.append(Paragraph("Asignatura: " + asignatura.nombre, estilo))
+
+			estilo.fontName = tt2ps('Times-Roman', 1, 0)
+
+			pagina.append(Paragraph(""+"Justificación: ", estilo))
+			estilo.fontName = tt2ps('Times-Roman', 0, 0)
+			pagina.append(Paragraph("" + incidencia.justificacion, estilo))
 			pagina.append(salto)
-			pagina.append(Paragraph("Firmas:", estilo))
+			pagina.append(salto)
 			pagina.append(salto)
 			pagina.append(salto)
 
-			pagina.append(Paragraph("Nombre del representante", estilo))
-
+			pagina.append(Paragraph(""+estudiante.representante.nombres_completos(), estilo))
+			estilo.fontName = tt2ps('Times-Roman', 1, 0)
+			pagina.append(Paragraph("REPRESENTANTE", estilo))
+			pagina.append(salto)
+			pagina.append(salto)
+			pagina.append(salto)
+			estilo.fontName = tt2ps('Times-Roman', 0, 0)
 			pagina.append(Paragraph(incidencia.revisado_por.user.get_full_name(), estilo))
-
-			nombreArchivo= "justificante-"+incidencia.fecha.strftime('%m-%d-%Y')+"-"+estudiante.nombre+"-"+estudiante.apellido+".pdf"
-			documento = SimpleDocTemplate(nombreArchivo,pagezise=landscape(A4),  showBoundary=1, displayDocTitle=1, title="Justificante")
+			estilo.fontName = tt2ps('Times-Roman', 1, 0)
+			pagina.append(Paragraph("INSPECTOR", estilo))
+			nombreArchivo= "justificante-"+incidencia.fecha.strftime('%m-%d-%Y')+".pdf"
+			documento = SimpleDocTemplate(nombreArchivo, pagesize=A6,  showBoundary=1, displayDocTitle=1, leftMargin=2,
+										  rightMargin=2, topMargin=2, bottomMargin=2, title="Justificante")
 
 			documento.build(pagina)
 
@@ -282,5 +293,18 @@ def incidencia_justificar_estudiante_incidencia(request, id_estudiante, id_incid
 				  context_instance=RequestContext(request))
 
 
+@login_required()
+def matricular(request):
+	''
+	periodo = get_object_or_404(Periodo, activo=True)
+	matriculas = Matricula.objects.all()
+	for m in matriculas:
+		asignaturas = CursoAsignatura.objects.filter(curso=m.curso, periodo=periodo)
+		for a in asignaturas:
+			if not CursoAsignaturaEstudiante.objects.filter(asignatura = a, estudiante = m.estudiante).exists():
+				cae = CursoAsignaturaEstudiante()
+				cae.asignatura = a
+				cae.estudiante = m.estudiante
+				cae.save()
 
-
+	return HttpResponse("Correcto, mostrar mensaje")

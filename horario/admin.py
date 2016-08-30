@@ -7,6 +7,7 @@ from models import Horario
 
 @admin.register(Horario)
 class HorarioAdmin(admin.ModelAdmin):
-    list_display = ['dia', 'hora', 'cursoasignatura',]
+    list_display = ['dia', 'hora', 'curso_asignado',]
+    raw_id_fields = ('cursoasignatura',)
 
 

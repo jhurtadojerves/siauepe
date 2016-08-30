@@ -50,6 +50,11 @@ urlpatterns = [
     url(r'^estudiante/buscar/$', 'incidencia.views.busqueda', name='busqueda'),
 
 
+	####### MATRICULAR A LOS ESTUDIANTES EN LOS CURSOS
+
+	url(r'^matricular/$', 'incidencia.views.matricular', name='matricular'),
+
+
     #url(r'^incidencia/registrar/curso/$', incidencia.views.incidencia_buscar_curso, name='incidencia_buscar_curso'),
     #url(r'^incidencia/registrar/curso/(?P<id>\d+)/$', incidencia.views.incidencia_registrar_curso, name='incidencia_registrar_curso'),
 ]
