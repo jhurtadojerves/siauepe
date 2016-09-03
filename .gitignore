@@ -75,3 +75,5 @@ target/
 
 *.xls
 *.pdf
+
+local_settings.py

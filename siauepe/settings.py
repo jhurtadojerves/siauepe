@@ -24,7 +24,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'qnh2qk27ag1a387xa&(sn^#f*(sedxnrzyzn6u_@qub7zsyc)$'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -87,20 +87,7 @@ WSGI_APPLICATION = 'siauepe.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'siauepe',
-        'USER': 'siauepe',
-        'PASSWORD': '123456',
-        'HOST': 'localhost',
-        'PORT': '3306',
-        'OPTIONS': {
-            'init_command': 'SET storage_engine=INNODB',
-            'init_command': 'SET foreign_key_checks = 0;'
-        },
-    }
-}
+
 
 
 # Password validation
@@ -152,3 +139,8 @@ STATICFILES_DIRS = (
 
 LOGIN_REDIRECT_URL = "/"
 LOGIN_URL = '/login/'
+
+try:
+    from .local_settings import *
+except ImportError:
+    pass
