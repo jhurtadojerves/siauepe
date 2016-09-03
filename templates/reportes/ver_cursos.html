@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}
+Inicio
+{% endblock %}
+
+{% block content %}
+    <p>Seleccionar el curso</p>
+
+    <ol>
+        {% for curso in cursos %}
+            <li><a href="{{ curso.id }}">{{ curso.nombre }} {{ curso.especialidad }} paralelo {{ curso.paralelo }}</a></li>
+        {% endfor %}
+
+    </ol>
+
+
+{% endblock %}

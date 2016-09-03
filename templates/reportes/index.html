@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}
+Inicio
+{% endblock %}
+
+{% block content %}
+    <p>A continuación se listan las acciones que pueden ser ejectuadas:</p>
+
+    <h2>Módulo de Reportes</h2>
+    <ol>
+        <li><a href="{% url 'reporte_cursos' %}">Reporte de Asistencia por Curso</a></li>
+        <li><a href="#">Reporte de Asistencia por Estudiante</a></li>
+        <li><a href="#">Reporte de Atrasos por Curso</a></li>
+        <li><a href="#">Reporte de Atrasos por Estudiante</a></li>
+    </ol>
+
+
+{% endblock %}

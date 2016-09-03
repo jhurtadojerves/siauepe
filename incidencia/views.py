@@ -20,6 +20,13 @@ from horario.models import Horario
 from curso.models import Curso
 from asignatura.models import Asignatura
 
+
+import xlsxwriter
+from xlsxwriter.utility import xl_range_abs
+
+
+
+
 #####################################
 #####################################
 '''
@@ -308,3 +315,108 @@ def matricular(request):
 				cae.save()
 
 	return HttpResponse("Correcto, mostrar mensaje")
+
+@login_required()
+def reporte_index(request):
+	return render(request, 'reportes/index.html', {},
+				  context_instance=RequestContext(request))
+
+@login_required()
+def reporte_cursos(request):
+	periodo = Periodo.objects.get(activo=True)
+	cursoasignatura = CursoAsignatura.objects.filter(periodo = periodo).values_list('curso')
+	cursos = Curso.objects.filter(id__in = cursoasignatura).order_by('especialidad')
+	return render(request, 'reportes/ver_cursos.html', {'cursos':cursos},
+				  context_instance=RequestContext(request))
+
+@login_required()
+def reporte_cursos_xls(request, curso):
+	periodo = Periodo.objects.get(activo=True)
+	curso = get_object_or_404(Curso, id = curso)
+
+	cursoasignaturaestudiante = CursoAsignaturaEstudiante.objects.filter(asignatura__curso = curso, asignatura__periodo = periodo).order_by('asignatura')
+
+	asignaturas = Asignatura.objects.filter(id__in = cursoasignaturaestudiante.values_list('asignatura__asignatura'))
+
+	#estudiantes = Estudiante.objects.filter(id__in=cursoasignaturaestudiante.values_list('estudiante'))
+
+	filename = 'reporte-curso.xls'
+
+	wb = xlsxwriter.Workbook(filename)
+	reporte = wb.add_worksheet('sheet1')
+	reporte.set_column(0, 0, 25)
+	reporte.set_column(1, 0, 25)
+	reporte.set_column(2, 0, 25)
+	reporte.set_column(3, 0, 25)
+	reporte.set_column(4, 0, 25)
+	num_format = wb.add_format({
+		'num_format': '0',
+		'align': 'right',
+		'font_size': 12,
+
+	})
+	formato_negrita = wb.add_format({
+		'bold': True,
+		'align': 'center'
+	})
+	general_format = wb.add_format({
+		'align': 'left',
+		'font_size': 12,
+	})
+
+	filaInicio = 0
+	reporte.merge_range(filaInicio, 0, filaInicio, 4, "UNIDAD EDUCATIVA PARTICULAR EMANUEL", formato_negrita)
+
+	filaInicio+=2
+	reporte.merge_range(filaInicio, 0, filaInicio, 4, "Reporte "+curso.nombre +" de "+ curso.especialidad.nombre + " paralelo "+curso.paralelo, formato_negrita)
+
+	filaInicio += 2
+
+	reporte.write(filaInicio, 1, "Horas Totales", formato_negrita)
+	reporte.write(filaInicio, 2, u'Número de Estudiantes', formato_negrita)
+
+	reporte.write(filaInicio, 3, "Cantidad de Faltas", formato_negrita)
+	reporte.write(filaInicio, 4, "Cantidad de Atrasos", formato_negrita)
+
+	filaInicio+=1
+
+	for a in asignaturas:
+		cursoasig = cursoasignaturaestudiante.filter(asignatura__asignatura=a)
+
+		ca = CursoAsignatura.objects.get(asignatura = a, curso = curso, periodo = periodo)
+
+
+		estudiantes = cursoasignaturaestudiante.filter(asignatura__asignatura=a).values_list('estudiante')
+
+		faltas = Incidencia.objects.filter(asignaturaestudiante__in = cursoasig, tipo = "F")
+		atrasos = Incidencia.objects.filter(asignaturaestudiante__in = cursoasig, tipo="A")
+		reporte.write(filaInicio, 0, a.nombre, formato_negrita)
+
+		reporte.write(filaInicio, 1, ca.numero_horas)
+		reporte.write(filaInicio, 2, estudiantes.count())
+		reporte.write(filaInicio, 3, faltas.count())
+		reporte.write(filaInicio, 4, atrasos.count())
+		filaInicio+=1
+	'''
+	chart = wb.add_chart({'type': 'pie'})
+	chart.title_name = 'Temas'
+	chart.width = reporte._size_col(0)
+	values = '=%s!%s' % (reporte.name, xl_range_abs(inicio, 1, inicio + 2, 1))
+	categories = '=%s!%s' % (reporte.name, xl_range_abs(inicio, 0, inicio + 2, 0))
+	chart.add_series({'values': values, 'categories': categories, 'smooth': True})
+	reporte.insert_chart(inicio + 4, 0, chart)
+
+	chartBarras = wb.add_chart({'type': 'column'})
+	chartBarras.title_name = 'Temas'
+	chartBarras.width = reporte._size_col(0)
+	chartBarras.add_series({'values': values, 'categories': categories, 'smooth': True})
+	reporte.insert_chart(inicio + 4, 1, chartBarras)
+	'''
+	wb.close()
+	output = open(filename)
+	nombre = 'attachment; filename=' + filename
+	#return HttpResponse(filename)
+	response = HttpResponse(output, content_type="application/ms-excel")
+	response['Content-Disposition'] = nombre
+	return response
+
