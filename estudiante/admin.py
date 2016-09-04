@@ -29,7 +29,7 @@ class EstudianteAdmin(ImportMixin, admin.ModelAdmin):
 class MatriculaResource(resources.ModelResource):
 	class Meta:
 		model = Matricula
-		fields = ('estudiante', 'curso', 'estado',)
+		fields = ('id','estudiante', 'curso', 'estado',)
 		import_order = fields
 		IMPORT_EXPORT_SKIP_ADMIN_LOG = True
 
