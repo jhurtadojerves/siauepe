@@ -33,6 +33,7 @@ urlpatterns = [
     url(r'^incidencia/$', 'incidencia.views.home_incidencia', name='home_incidencia'),
     url(r'^incidencia/registrar/estudiante/$', 'incidencia.views.incidencia_buscar_estudiante', name='incidencia_buscar_estudiante'),
     url(r'^incidencia/registrar/estudiante/([^/]+)/$', 'incidencia.views.incidencia_asignaturas_estudiante', name='incidencia_asignaturas_estudiante'),
+	url(r'^incidencia/registrar/estudiante/([^/]+)/dia/$', 'incidencia.views.incidencia_asignaturas_estudiante_dia', name='incidencia_asignaturas_estudiante_dia'),
 	url(r'^incidencia/registrar/estudiante/([^/]+)/([^/]+)/$', 'incidencia.views.incidencia_registrar_estudiante', name='incidencia_registrar_estudiante'),
 
     url(r'^incidencia/registrar/curso/$', 'incidencia.views.incidencia_buscar_curso',
@@ -44,6 +45,7 @@ urlpatterns = [
 
 	url(r'^incidencia/justificar/$', 'incidencia.views.incidencia_justificar', name='incidencia_justificar'),
 	url(r'^incidencia/justificar/estudiante/([^/]+)/$', 'incidencia.views.incidencia_justificar_estudiante', name='incidencia_justificar_estudiante'),
+
 	url(r'^incidencia/justificar/estudiante/([^/]+)/([^/]+)/$', 'incidencia.views.incidencia_justificar_estudiante_incidencia', name='incidencia_justificar_estudiante_incidencia'),
 
 

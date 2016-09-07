@@ -25,6 +25,7 @@ Faltas y Atrasos - {{ estudiante.nombre }} {{ estudiante.apellido }}
                   <td>ID</td>
                   <td>Fecha</td>
                   <td>Tipo</td>
+                  <td>Hora</td>
                   <td>Inspector</td>
                   <td>Asignatura</td>
                   <td>Justificar</td>
@@ -35,12 +36,16 @@ Faltas y Atrasos - {{ estudiante.nombre }} {{ estudiante.apellido }}
                     <td>{{ incidencia.id }}</td>
                     <td>{{ incidencia.fecha }}</td>
                     <td>{{ incidencia.get_tipo_display }}</td>
+                    <td> {{ incidencia.hora.get_hora_display }}</td>
                     <td>{{ incidencia.revisado_por.user.get_full_name }}</td>
                     <td>{{ incidencia.asignaturaestudiante.asignatura.asignatura.nombre }}</td>
                     <td><a href="{% url 'incidencia_justificar_estudiante_incidencia' estudiante.id incidencia.id %}">Justificar</a></td>
 
                 </tr>
               {% endfor %}
+                <tr>
+                    <td colspan="7"><a href="#" style="text-align:right; margin: 0;">Justificar Por días</a></td>
+                </tr>
 
 
         </table>

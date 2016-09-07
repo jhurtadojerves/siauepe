@@ -8,5 +8,5 @@ from models import Incidencia
 
 @admin.register(Incidencia)
 class IncidenciaAdmin(admin.ModelAdmin):
-	list_display = ('fecha', 'estado', 'tipo')
+	list_display = ('id','fecha', 'ver_hora','estado', 'tipo')
 	list_editable = ('estado', 'tipo')

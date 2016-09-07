@@ -22,7 +22,7 @@ import re
 class incidenciaForm(ModelForm):
 	class Meta:
 		model = Incidencia
-		exclude = ['revisado_por', 'estado', 'asignaturaestudiante', 'cedula_representante', 'justificacion']
+		exclude = ['revisado_por', 'estado', 'asignaturaestudiante', 'cedula_representante', 'justificacion', 'hora',]
 
 
 class EstudiantesForm(forms.Form):
@@ -46,6 +46,11 @@ class JustificarForm(ModelForm):
 		widgets = {
 			'justificacion': forms.Textarea(attrs={'cols': 80, 'rows': 5}),
 		}
+
+class IncidenciaDia(forms.Form):
+	fecha = forms.DateField()	
+
+
 
 	'''def clean_cedula_representante(self):
 		"""

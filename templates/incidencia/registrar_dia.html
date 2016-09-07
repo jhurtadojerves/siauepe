@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}
+Registrar Incidencia
+{% endblock %}
+
+{% block content %}
+
+    {% if horario %}
+        <div class="alert alert-danger .alert-dismissible" role="alert">No existe un horario registrado para la asignatura {{ asignatura.nombre }} en la fecha seleccionada</div>
+    {% endif %}
+    {% if duplicado %}
+        <div class="alert alert-danger .alert-dismissible" role="alert">Ya existen faltas registradas para el día seleccionado. Registre las faltas del estudiante de forma
+             <a href="{% url 'incidencia_asignaturas_estudiante' estudiante.id %}">individual para la fecha seleccionada</a></div>
+    {% endif %}
+    <div class="alert alert-info" role="alert">
+        Registro de Incidencias - {{ estudiante.nombre }} {{ estudiante.apellido }}
+    </div>
+    <form action='' method="POST" style="font-size: 1em;">
+        {% csrf_token %}
+            {{ form.as_p }}
+        <button class="enviar" type="submit"><bold>Registrar</bold></button>
+    </form>
+
+
+{% endblock %}

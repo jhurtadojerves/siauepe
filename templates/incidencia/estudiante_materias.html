@@ -17,5 +17,6 @@ Lista de Aisgnaturas
         {% for asignatura in asignaturas %}
             <a href="{{ asignatura.id }}" class="list-group-item">{{ asignatura.asignatura.asignatura.nombre }}</a>
         {% endfor %}
+        <a href="{% url 'incidencia_asignaturas_estudiante_dia' estudiante.id %}" class="list-group-item active">Día Completo</a>
     </div>
 {% endblock %}

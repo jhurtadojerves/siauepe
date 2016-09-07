@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-Registrar Incidencia
+Justificar Incidencia
 {% endblock %}
 
 {% block content %}
@@ -11,7 +11,7 @@ Registrar Incidencia
              <a href="{% url 'home' %}">Volver al inicio</a></div>
     {% endif %}
     <div class="alert alert-info" role="alert">
-        Justificar - {{ estudiante.nombre }} {{ estudiante.apellido }} - {{ asignatura.nombre }} - {{ incidencia.fecha }}
+        Justificar - {{ estudiante.nombre }} {{ estudiante.apellido }} - {{ asignatura.nombre }} - {{ incidencia.fecha }} - {{ incidencia.hora.get_hora_display }}
     </div>
     <form action='' method="POST" style="font-size: 1em;">
         {% csrf_token %}

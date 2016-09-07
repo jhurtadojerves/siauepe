@@ -48,7 +48,7 @@ from reportlab.platypus import Table
 from reportlab.lib.fonts import tt2ps
 
 
-from forms import incidenciaForm, EstudiantesForm, JustificarForm
+from forms import incidenciaForm, EstudiantesForm, JustificarForm, IncidenciaDia
 from django import forms
 
 # Create your views here.
@@ -89,20 +89,27 @@ def incidencia_registrar_estudiante(request, id, id2):
 			incidencia = form.save(commit=False)
 			incidencia.revisado_por = inspector
 			incidencia.asignaturaestudiante = asignaturaestudiante
-			#horario = get_object_or_404(Horario, dia = incidencia.fecha.weekday())
-
-			if not (Horario.objects.filter(dia = incidencia.fecha.weekday(), cursoasignatura = asignaturaestudiante.asignatura).exists()):
+			horarios = Horario.objects.filter(dia = incidencia.fecha.weekday(), cursoasignatura = asignaturaestudiante.asignatura)
+			if not (horarios.exists()):
 				return render(request, 'incidencia/registrar.html', {'form': form, 'estudiante': estudiante, 'asignatura':asignatura, 'horario': True},
 							  context_instance=RequestContext(request))
-
-			try:
-				incidencia.save()
-			except:
-				return render(request, 'incidencia/registrar.html',
-							  {'form': form, 'estudiante': estudiante, 'duplicado': True,
-							   'asignatura': incidencia.asignaturaestudiante.asignatura.asignatura},
-							  context_instance=RequestContext(request))
-
+			else:
+				for horario in horarios:
+					inc = Incidencia()
+					inc.estado = incidencia.estado
+					inc.justificacion = incidencia.justificacion
+					inc.asignaturaestudiante = incidencia.asignaturaestudiante
+					inc.fecha = incidencia.fecha
+					inc.tipo = incidencia.tipo
+					inc.revisado_por = incidencia.revisado_por
+					inc.hora = horario
+					try:
+						inc.save()
+					except:
+						return render(request, 'incidencia/registrar.html',
+									  {'form': form, 'estudiante': estudiante, 'duplicado': True,
+									   'asignatura': incidencia.asignaturaestudiante.asignatura.asignatura},
+									  context_instance=RequestContext(request))
 			return HttpResponseRedirect(reverse('incidencia_asignaturas_estudiante', args=(id))+"?incidencia=correcto",)
 			#return render(request, 'index.html', {'form': form, 'estudiante': estudiante, 'ingresado': True}, context_instance=RequestContext(request))
 	else:
@@ -115,6 +122,40 @@ def incidencia_asignaturas_estudiante(request, id):
 	periodo = get_object_or_404(Periodo, activo = True)
 	asignaturas = CursoAsignaturaEstudiante.objects.filter(estudiante=estudiante, asignatura__periodo=periodo)
 	return render(request, 'incidencia/estudiante_materias.html', {'asignaturas':asignaturas, 'estudiante':estudiante}, context_instance=RequestContext(request))
+
+@login_required()
+def incidencia_asignaturas_estudiante_dia(request, id):
+	estudiante = get_object_or_404(Estudiante, id = id)
+	periodo = get_object_or_404(Periodo, activo=True)
+	cursoAsigEst = CursoAsignaturaEstudiante.objects.filter(estudiante=estudiante, asignatura__periodo=periodo).values_list('asignatura')
+	inspector = Inspector.objects.get(user=request.user)
+	if request.method == 'POST':
+		form = IncidenciaDia(request.POST)
+
+		fechaString = request.POST.get('fecha')
+		fecha = datetime.datetime.strptime(fechaString, '%Y-%m-%d').date()
+		horarios = Horario.objects.filter(cursoasignatura__in=cursoAsigEst, dia=fecha.weekday())
+		incidenciasRegistradas = Incidencia.objects.filter(fecha = fecha, tipo = "F", asignaturaestudiante__estudiante=estudiante)
+		if horarios.exists() and incidenciasRegistradas.count() <= 0:
+			for horario in horarios:
+				cae = CursoAsignaturaEstudiante.objects.filter(asignatura=horario.cursoasignatura, estudiante=estudiante)
+				for i in cae:
+					incidencia = Incidencia()
+					incidencia.fecha = fecha
+					incidencia.tipo = 'F'
+					incidencia.revisado_por = inspector
+					incidencia.asignaturaestudiante = i
+					incidencia.save()
+		else:
+			return render(request, 'incidencia/registrar_dia.html',
+						  {'form': form, 'estudiante': estudiante, 'duplicado': True},
+						  context_instance=RequestContext(request))
+		return HttpResponseRedirect(reverse('incidencia_asignaturas_estudiante', args=(id))+"?incidencia=correcto")
+
+	else:
+		form = IncidenciaDia()
+	return render(request, 'incidencia/registrar_dia.html', {'form': form, 'estudiante': estudiante},
+				  context_instance=RequestContext(request))
 
 
 @login_required()
@@ -161,28 +202,35 @@ def incidencia_curso_estudiantes(request, id_curso, id_asignatura):
 		if (fechaString=='') or (len(seleccionados)==0):
 			return render(request, 'incidencia/registrar.html', {'form': form, 'fecha':fecha,},
 						  context_instance=RequestContext(request))
-
+		horarios = Horario.objects.filter(dia=fecha.weekday(),
+									   cursoasignatura=cursoasignatura)
 		if not (Horario.objects.filter(dia=fecha.weekday(),
 									   cursoasignatura=cursoasignatura).exists()):
 			return render(request, 'incidencia/registrar.html',
 						  {'form': form, 'horario': True,
 						   'asignatura': cursoasignatura.asignatura},
 						  context_instance=RequestContext(request))
+		else:
 
 
-		stdSelected = Estudiante.objects.filter(id__in=seleccionados)
+			stdSelected = Estudiante.objects.filter(id__in=seleccionados)
 
-		crsEST = CursoAsignaturaEstudiante.objects.filter(asignatura=cursoasignatura, estudiante__in=stdSelected)
-
-		for crsE in crsEST:
-			if not(Incidencia.objects.filter(fecha = fecha, asignaturaestudiante=crsE).exists()):
-				incidencia = Incidencia()
-				incidencia.fecha = fecha
-				incidencia.tipo = tipo
-				incidencia.revisado_por = inspector
-				incidencia.asignaturaestudiante = crsE
-				incidencia.save()
-		return HttpResponseRedirect(reverse('incidencia_curso_materias', args=(id_curso))+"?incidencia=correcto")
+			crsEST = CursoAsignaturaEstudiante.objects.filter(asignatura=cursoasignatura, estudiante__in=stdSelected)
+			#return HttpResponse(crsEST.count())
+			for crsE in crsEST:
+				hrs = Horario.objects.filter(cursoasignatura=crsE.asignatura, dia=fecha.weekday())
+				prueba = list()
+				for h in hrs:
+					#return HttpResponse(Incidencia.objects.filter(fecha = fecha, asignaturaestudiante=crsE, hora = h).exists())
+					if not(Incidencia.objects.filter(fecha = fecha, asignaturaestudiante=crsE, hora = h).exists()):
+						incidencia = Incidencia()
+						incidencia.fecha = fecha
+						incidencia.tipo = tipo
+						incidencia.revisado_por = inspector
+						incidencia.asignaturaestudiante = crsE
+						incidencia.hora = h
+						incidencia.save()
+			return HttpResponseRedirect(reverse('incidencia_curso_materias', args=(id_curso))+"?incidencia=correcto")
 	else:
 		form = EstudiantesForm(query=estudiantes)
 	return render(request, 'incidencia/registrar_por_curso.html', {'form': form, 'curso':cursoasignatura},
@@ -226,7 +274,7 @@ def incidencia_justificar_estudiante_incidencia(request, id_estudiante, id_incid
 	incidencia = get_object_or_404(Incidencia, fecha__range=(now-dias, now), id=id_incidencia, estado=False)
 	estudiante = incidencia.asignaturaestudiante.estudiante
 	asignatura = incidencia.asignaturaestudiante.asignatura.asignatura
-	horario = Horario.objects.get(cursoasignatura=incidencia.asignaturaestudiante.asignatura, dia=incidencia.fecha.weekday())
+	#horario = Horario.objects.get(cursoasignatura=incidencia.asignaturaestudiante.asignatura, dia=incidencia.fecha.weekday())
 
 	if request.method=='POST':
 		form = JustificarForm(request.POST, instance=incidencia)
@@ -256,7 +304,7 @@ def incidencia_justificar_estudiante_incidencia(request, id_estudiante, id_incid
 
 			pagina.append(Paragraph("Estudiante: " + estudiante.nombre + " " + estudiante.apellido, estilo))
 			pagina.append(Paragraph("Fecha: " + incidencia.fecha.strftime('%m/%d/%Y'), estilo))
-			pagina.append(Paragraph("Hora: " + horario.get_hora_display(), estilo))
+			pagina.append(Paragraph("Hora: " + incidencia.hora.get_hora_display(), estilo))
 			pagina.append(Paragraph("Asignatura: " + asignatura.nombre, estilo))
 
 			estilo.fontName = tt2ps('Times-Roman', 1, 0)

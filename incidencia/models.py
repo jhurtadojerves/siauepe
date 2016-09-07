@@ -23,6 +23,10 @@ class Incidencia(models.Model):
 	estado = models.BooleanField(choices=estado_opciones, default=False)
 	tipo = models.CharField(max_length=1,choices=tipo_opciones, default='F')
 	revisado_por = models.ForeignKey(Inspector, blank=True)
+	hora = models.ForeignKey(Horario)
 
 	class Meta:
-		unique_together = ['asignaturaestudiante', 'fecha',]
+		unique_together = ['asignaturaestudiante', 'hora', 'fecha']
+
+	def ver_hora(self):
+		return self.hora.get_hora_display()
