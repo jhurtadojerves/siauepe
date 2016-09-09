@@ -6,11 +6,18 @@ from django.db import models
 from cursoasignatura.models import CursoAsignatura
 from estudiante.models import Estudiante
 
+
 # Create your models here.
 
 class CursoAsignaturaEstudiante(models.Model):
-    asignatura=models.ForeignKey(CursoAsignatura)
-    estudiante=models.ForeignKey(Estudiante)
+	asignatura = models.ForeignKey(CursoAsignatura)
+	estudiante = models.ForeignKey(Estudiante)
 
-    def __unicode__(self):
-        return self.asignatura.asignatura.nombre + " " + self.asignatura.curso.nombre
+	def cursostr(self):
+		return self.asignatura.curso.nombre
+
+	def asignaturastr(self):
+		return self.asignatura.asignatura.nombre
+
+	def __unicode__(self):
+		return self.asignatura.asignatura.nombre + " " + self.asignatura.curso.nombre
