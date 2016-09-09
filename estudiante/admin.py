@@ -7,7 +7,7 @@ from models import Estudiante, Matricula
 
 
 from import_export import resources, fields
-from import_export.admin import ImportMixin
+from import_export.admin import ImportExportMixin, ImportMixin
 
 
 class EstudianteResource(resources.ModelResource):
@@ -15,11 +15,12 @@ class EstudianteResource(resources.ModelResource):
 		model = Estudiante
 		fields = ('id', 'cedula', 'representante', 'apellido', 'nombre', 'estado' )
 		import_order = fields
+		export_order = fields
 		IMPORT_EXPORT_SKIP_ADMIN_LOG = True
 
 
 @admin.register(Estudiante)
-class EstudianteAdmin(ImportMixin, admin.ModelAdmin):
+class EstudianteAdmin(ImportExportMixin, admin.ModelAdmin):
 	list_display = ['id','apellido','nombre', 'representante']
 	ordering = ['id', 'apellido' ]
 	search_fields = ['id','cedula', 'nombre', 'apellido', 'representante__nombres',]
@@ -34,7 +35,7 @@ class MatriculaResource(resources.ModelResource):
 		IMPORT_EXPORT_SKIP_ADMIN_LOG = True
 
 @admin.register(Matricula)
-class MatriculaAdmin(ImportMixin, admin.ModelAdmin):
+class MatriculaAdmin(ImportExportMixin, admin.ModelAdmin):
 	list_display = ['id', 'estudiante', 'curso', 'estado']
 	ordering = ['id', 'estudiante', 'curso', 'estado']
 	search_fields = ['id', 'estudiante__nombre', 'estudiante__apellido', 'curso', 'estado']
