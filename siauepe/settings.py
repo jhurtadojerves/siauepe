@@ -50,13 +50,11 @@ INSTALLED_APPS = [
     'profesor',
     'representante',
     'import_export',
-    'corsheaders',
 ]
 
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-	'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -65,12 +63,7 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ORIGIN_ALLOW_ALL = True
 
-CORS_ORIGIN_WHITELIST = (
-    'google.com',
-    'juliohurtado.me'
-)
 
 ROOT_URLCONF = 'siauepe.urls'
 
@@ -140,8 +133,11 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
-STATIC_ROOT = 'https://juliohurtado.me/siauepe/'
-STATIC_URL = 'https://juliohurtado.me/siauepe/'
+#STATIC_ROOT = 'https://juliohurtado.me/siauepe/'
+#STATIC_URL = 'https://juliohurtado.me/siauepe/'
+
+STATIC_ROOT = 'staticfiles'
+STATIC_URL = '/static/'
 
 #STATIC_ROOT = '/static/'
 #STATIC_URL = '/static/'
