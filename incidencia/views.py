@@ -24,7 +24,9 @@ from asignatura.models import Asignatura
 import xlsxwriter
 from xlsxwriter.utility import xl_range_abs
 
+import locale
 
+locale.setlocale(locale.LC_ALL,"")
 
 
 #####################################
@@ -48,7 +50,7 @@ from reportlab.platypus import Table
 from reportlab.lib.fonts import tt2ps
 
 
-from forms import incidenciaForm, EstudiantesForm, JustificarForm, IncidenciaDia
+from forms import incidenciaForm, EstudiantesForm, JustificarForm, IncidenciaDia, JustificarFechaForm
 from django import forms
 
 # Create your views here.
@@ -145,6 +147,7 @@ def incidencia_asignaturas_estudiante_dia(request, id):
 					incidencia.tipo = 'F'
 					incidencia.revisado_por = inspector
 					incidencia.asignaturaestudiante = i
+					incidencia.hora = horario
 					incidencia.save()
 		else:
 			return render(request, 'incidencia/registrar_dia.html',
@@ -347,6 +350,109 @@ def incidencia_justificar_estudiante_incidencia(request, id_estudiante, id_incid
 				  {'form': form, 'estudiante': estudiante, 'asignatura': asignatura, 'incidencia':incidencia},
 				  context_instance=RequestContext(request))
 
+@login_required()
+def incidencia_justificar_estudiante_fecha(request, id_estudiante):
+
+	#incidencia = get_object_or_404(Incidencia, fecha__range=(now-dias, now), id=id_incidencia, estado=False)
+	estudiante = get_object_or_404(Estudiante, id = id_estudiante)
+	inspector = Inspector.objects.get(user = request.user)
+	#asignatura = incidencia.asignaturaestudiante.asignatura.asignatura
+	#horario = Horario.objects.get(cursoasignatura=incidencia.asignaturaestudiante.asignatura, dia=incidencia.fecha.weekday())
+	if request.method=='POST':
+		form = JustificarFechaForm(request.POST)
+		if form.is_valid():
+			inicioString = request.POST.get('fecha_inicio')
+			finString = request.POST.get('fecha_fin')
+			justificacion = request.POST.get('justificacion')
+
+			fechaInicio = datetime.datetime.strptime(inicioString, '%Y-%m-%d').date()
+
+			fechaFin = datetime.datetime.strptime(finString, '%Y-%m-%d').date()
+
+
+			incidencias = Incidencia.objects.filter(fecha__in=(fechaInicio, fechaFin), estado = False)
+
+			if not incidencias.exists():
+				return render(request, 'incidencia/justificar/justificar_fecha.html',
+					   {'form': form, 'estudiante': estudiante, 'estado': False},
+					   context_instance=RequestContext(request))
+
+			for incidencia in incidencias:
+				incidencia.justificacion = justificacion
+				incidencia.estado = True
+				incidencia.revisado_por = inspector
+				incidencia.save()
+
+
+			estiloHoja = getSampleStyleSheet()
+			cabecera = estiloHoja['Title']
+			cabecera.pageBreakBefore = 0
+			cabecera.keepWithNext = 0
+			cabecera.textColor = colors.red
+			estilo = estiloHoja['BodyText']
+
+			salto = Spacer(0, 10)
+
+			pagina = []
+
+			pagina.append(salto)
+			pagina.append(Paragraph("Unidad Educativa Particular Emanuel", cabecera))
+
+			cabecera.textColor = colors.black
+			pagina.append(Paragraph(""+"Justificación", cabecera))
+			pagina.append(salto)
+			pagina.append(salto)
+
+			pagina.append(Paragraph("Estudiante: " + estudiante.nombre + " " + estudiante.apellido, estilo))
+
+
+			fecha1 = fechaInicio.strftime("%A %d de %B del %Y %Z")
+			fecha2 = fechaFin.strftime("%A %d de %B del %Y %Z")
+
+
+			pagina.append(Paragraph("Fecha de Inicio: " +fecha1, estilo))
+			pagina.append(Paragraph("Fecha de Final: " + fecha2, estilo))
+
+
+			estilo.fontName = tt2ps('Times-Roman', 1, 0)
+
+			pagina.append(Paragraph(""+"Justificación: ", estilo))
+			estilo.fontName = tt2ps('Times-Roman', 0, 0)
+			pagina.append(Paragraph("" + justificacion, estilo))
+			pagina.append(salto)
+			pagina.append(salto)
+			pagina.append(salto)
+			pagina.append(salto)
+
+			pagina.append(Paragraph(""+estudiante.representante.nombres_completos(), estilo))
+			estilo.fontName = tt2ps('Times-Roman', 1, 0)
+			pagina.append(Paragraph("REPRESENTANTE", estilo))
+			pagina.append(salto)
+			pagina.append(salto)
+			pagina.append(salto)
+			estilo.fontName = tt2ps('Times-Roman', 0, 0)
+			pagina.append(Paragraph(request.user.get_full_name(), estilo))
+			estilo.fontName = tt2ps('Times-Roman', 1, 0)
+			pagina.append(Paragraph("INSPECTOR", estilo))
+			nombreArchivo= "justificante.pdf"
+			documento = SimpleDocTemplate(nombreArchivo, pagesize=A6,  showBoundary=1, displayDocTitle=1, leftMargin=2,
+										  rightMargin=2, topMargin=2, bottomMargin=2, title="Justificante")
+
+			documento.build(pagina)
+
+
+			salida = open(nombreArchivo)
+			response = HttpResponse(salida, content_type='application/pdf')
+			response['Content-Disposition'] = 'inline; filename='+nombreArchivo
+			return response
+
+			#return HttpResponseRedirect(reverse('incidencia_justificar_estudiante', args=(estudiante.id,))+"?mensaje=correcto")
+	else:
+		form = JustificarFechaForm()
+
+	return render(request, 'incidencia/justificar/justificar_fecha.html',
+				  {'form': form, 'estudiante': estudiante,},
+				  context_instance=RequestContext(request))
 
 @login_required()
 def matricular(request):

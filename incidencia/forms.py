@@ -50,22 +50,17 @@ class JustificarForm(ModelForm):
 class IncidenciaDia(forms.Form):
 	fecha = forms.DateField()	
 
+class JustificarFechaForm(forms.Form):
+	fecha_inicio = forms.DateField()
+	fecha_fin = forms.DateField()
+	justificacion = forms.CharField(widget=forms.Textarea)
 
 
-	'''def clean_cedula_representante(self):
-		"""
-		Valída que sea Correcta la Cédula
-		"""
-		ced = self.cleaned_data['cedula_representante']
-		regex = '[0-9]{9,9}[0-9]'
-		if (re.match(regex, ced)):
-			valores = [int(ced[x]) * (2 - x % 2) for x in range(9)]
-			suma = sum(map(lambda x: x > 9 and x - 9 or x, valores))
-			veri = 10 - (suma - (10 * (suma / 10)))
-			if int(ced[9]) == int(str(veri)[-1:]):
-				return ced
-			else:
-				raise forms.ValidationError('Ingrese una cédula válida')
+
+	def clean_fecha_fin(self):
+		fecha_inicio = self.cleaned_data['fecha_inicio']
+		fecha_fin = self.cleaned_data['fecha_fin']
+		if(fecha_fin>=fecha_inicio):
+			return fecha_fin
 		else:
-			raise forms.ValidationError('Ingrese una cédula con el formato 1234567890')
-	'''
+			raise forms.ValidationError('La fecha de fin debe ser posterior a la fecha de inicio')

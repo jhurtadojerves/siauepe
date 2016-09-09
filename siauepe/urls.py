@@ -45,6 +45,7 @@ urlpatterns = [
 
 	url(r'^incidencia/justificar/$', 'incidencia.views.incidencia_justificar', name='incidencia_justificar'),
 	url(r'^incidencia/justificar/estudiante/([^/]+)/$', 'incidencia.views.incidencia_justificar_estudiante', name='incidencia_justificar_estudiante'),
+	url(r'^incidencia/justificar/estudiante/([^/]+)/fecha/$', 'incidencia.views.incidencia_justificar_estudiante_fecha', name='incidencia_justificar_estudiante_fecha'),
 
 	url(r'^incidencia/justificar/estudiante/([^/]+)/([^/]+)/$', 'incidencia.views.incidencia_justificar_estudiante_incidencia', name='incidencia_justificar_estudiante_incidencia'),
 

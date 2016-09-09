@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}
+Justificar Incidencia
+{% endblock %}
+
+{% block content %}
+
+    {% if request.GET.mensaje == "correcto" %}
+         <div class="alert alert-success" role="alert">¡Correcto! La incidencia se registró exitosamente. Seleccione una materia para ingresar otra incidencia o
+             <a href="{% url 'home' %}">Volver al inicio</a></div>
+    {% endif %}
+
+    {% if estado == False %}
+         <div class="alert alert-danger" role="alert">No se ha encontrado ninguna falta en el periodo de tiempo seleccionado</div>
+    {% endif %}
+
+    <div class="alert alert-info" role="alert">
+        Justificar - {{ estudiante.nombre }} {{ estudiante.apellido }}
+    </div>
+    <form action='' method="POST" style="font-size: 1em;">
+        {% csrf_token %}
+            {{ form.as_p }}
+        <button class="enviar" type="submit"><bold>Justificar</bold></button>
+    </form>
+
+
+{% endblock %}
