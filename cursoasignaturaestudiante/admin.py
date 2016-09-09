@@ -7,5 +7,3 @@ from models import CursoAsignaturaEstudiante
 @admin.register(CursoAsignaturaEstudiante)
 class CursoAsignaturaEstudianteAdmin(admin.ModelAdmin):
 	list_display = ('cursostr', 'asignaturastr', 'estudiante',)
-	list_filter = ('cursostr', 'asignaturastr', 'estudiante',)
-	search_fields = ('cursostr', 'asignaturastr', 'estudiante',)
