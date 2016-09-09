@@ -18,4 +18,5 @@ class CursoAsignaturaResource(resources.ModelResource):
 @admin.register(CursoAsignatura)
 class CursoAsignaturaAdmin(ImportExportMixin, admin.ModelAdmin):
 	list_display = ('asignatura', 'curso','periodo', 'profesor')
+	list_filter = ['curso',]
 	class_resource = CursoAsignaturaResource
