@@ -21,6 +21,8 @@ from django.contrib.auth.views import login
 
 #import incidencia.views
 #import inspector.views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -65,12 +67,7 @@ urlpatterns = [
 
     #url(r'^incidencia/registrar/curso/$', incidencia.views.incidencia_buscar_curso, name='incidencia_buscar_curso'),
     #url(r'^incidencia/registrar/curso/(?P<id>\d+)/$', incidencia.views.incidencia_registrar_curso, name='incidencia_registrar_curso'),
-]
+]+ static(settings.STATIC_URL, document_root=settings.STATIC_URL)
 
 
-from django.conf import settings
-from django.conf.urls.static import static
 
-urlpatterns = [
-    # ... the rest of your URLconf goes here ...
-] + static(settings.STATIC_URL, document_root=settings.STATIC_URL)
