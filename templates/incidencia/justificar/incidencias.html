@@ -44,7 +44,10 @@ Faltas y Atrasos - {{ estudiante.nombre }} {{ estudiante.apellido }}
                 </tr>
               {% endfor %}
                 <tr>
-                    <td colspan="7"><a href="#" style="text-align:right; margin: 0;">Justificar Por días</a></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td colspan="7"><a href="{% url 'incidencia_justificar_estudiante_fecha' estudiante.id%}" style="text-align:right; margin: 0;">Justificar Por días</a></td>
                 </tr>
 
 

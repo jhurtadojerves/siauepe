@@ -30,3 +30,9 @@ class Incidencia(models.Model):
 
 	def ver_hora(self):
 		return self.hora.get_hora_display()
+
+	def ver_estudiante(self):
+		return self.asignaturaestudiante.estudiante.nombre_completo()
+
+	def ver_asignatura(self):
+		return self.asignaturaestudiante.asignatura.asignatura.nombre

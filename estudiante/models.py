@@ -20,6 +20,9 @@ class Estudiante(models.Model):
 	def __unicode__(self):
 		return self.nombre + " " + self.apellido
 
+	def nombre_completo(self):
+		return self.nombre + " " + self.apellido
+
 
 '''
 # Tabla temporal de matrícula
