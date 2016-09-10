@@ -158,6 +158,8 @@ STATICFILES_DIRS = (
     os.path.join(PROJECT_ROOT, '../static'),
 )
 
+STATIC_ROOT = 'https://juliohurtado.me/siauepe/'
+STATIC_URL = 'https://juliohurtado.me/siauepe/'
 
 LOGIN_REDIRECT_URL = "/"
 LOGIN_URL = '/login/'
