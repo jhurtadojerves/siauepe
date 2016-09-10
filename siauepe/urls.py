@@ -67,7 +67,7 @@ urlpatterns = [
 
     #url(r'^incidencia/registrar/curso/$', incidencia.views.incidencia_buscar_curso, name='incidencia_buscar_curso'),
     #url(r'^incidencia/registrar/curso/(?P<id>\d+)/$', incidencia.views.incidencia_registrar_curso, name='incidencia_registrar_curso'),
-]+ static(settings.STATIC_URL, document_root=settings.STATIC_URL)
+]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 
 
