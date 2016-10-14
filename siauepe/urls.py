@@ -64,6 +64,8 @@ urlpatterns = [
 	url(r'^reporte/$', 'incidencia.views.reporte_index', name='reporte_index'),
 	url(r'^reporte/cursos/$', 'incidencia.views.reporte_cursos', name='reporte_cursos'),
 	url(r'^reporte/cursos/([^/]+)/$', 'incidencia.views.reporte_cursos_xls', name='reporte_cursos_xls'),
+    url(r'^reporte/estudiante/$', 'incidencia.views.reporte_estudiante_buscar', name='reporte_estudiante_buscar'),
+    url(r'^reporte/estudiante/([^/]+)/$', 'incidencia.views.reporte_estudiante', name='reporte_estudiante'),
 
     #url(r'^incidencia/registrar/curso/$', incidencia.views.incidencia_buscar_curso, name='incidencia_buscar_curso'),
     #url(r'^incidencia/registrar/curso/(?P<id>\d+)/$', incidencia.views.incidencia_registrar_curso, name='incidencia_registrar_curso'),

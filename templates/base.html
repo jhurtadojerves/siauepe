@@ -46,7 +46,7 @@
                                         {% for g in group %}
                                             {% if g == 'Inspectores' %}
                                                 <li><a href="/incidencia/">Faltas y Atrasos</a></li>
-                                                <li><a href="/incidencia/reporte/">Reportes</a></li>
+                                                <li><a href="{% url 'reporte_index' %}">Reportes</a></li>
                                                 <li><a href="{% url 'matricular' %}">Matricular</a></li>
                                             {% endif %}
                                         {% endfor %}

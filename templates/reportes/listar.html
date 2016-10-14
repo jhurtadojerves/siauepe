@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}
+Cantidad de Faltas - {{ estudiante.nombre }} {{ estudiante.apellido }}
+{% endblock %}
+
+{% block content %}
+
+    {% if request.GET.indicencia == "correcto" %}
+         <div class="alert alert-success" role="alert">¡Correcto! La incidencia se registró exitosamente. Seleccione una materia para ingresar otra incidencia o
+             <a href="{% url 'home' %}">Volver al inicio</a></div>
+    {% endif %}
+    {% if request.GET.mensaje == "correcto" %}
+         <div class="alert alert-success" role="alert">La Incidencia se justificó correctamente</div>
+    {% endif %}
+
+    <div class="panel panel-default">
+          <!-- Default panel contents -->
+          <div class="panel-heading">Cantidad de Faltas - {{ estudiante.nombre }} {{ estudiante.apellido }}</div>
+
+          <!-- Table -->
+    <div class="table-bordered">
+        <table class="table">
+              <tr>
+                  <td>Asignatura</td>
+                  <td>Horas al Año</td>
+                  <td>Cantidad de Faltas</td>
+                  <td>Porcentaje de Faltas</td>
+              </tr>
+
+              {% for asignatura in asignaturas %}
+                <tr>
+                    {% for a in asignatura %}
+                    <td>{{ a }}</td>
+                    {% endfor %}
+                </tr>
+              {% endfor %}
+
+        </table>
+    </div>
+
+</div>
+{% endblock %}
